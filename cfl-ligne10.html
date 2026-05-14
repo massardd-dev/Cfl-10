@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CFL L10"/>
+<meta name="theme-color" content="#05101f"/>
+<title>CFL · Ligne 10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:       #05101f;
+    --bg2:      #091828;
+    --surface:  rgba(255,255,255,0.04);
+    --border:   rgba(255,255,255,0.07);
+    --blue:     #3b7dd8;
+    --bluel:    #6aa3f0;
+    --green:    #3ecf8e;
+    --amber:    #f5b731;
+    --red:      #f2604a;
+    --txt:      #dde6f0;
+    --txt2:     #5a7fa8;
+    --txt3:     #273f5a;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    color: var(--txt);
+    min-height: 100dvh;
+    padding-top: calc(var(--safe-top) + 16px);
+    padding-bottom: calc(var(--safe-bot) + 80px);
+    padding-left: 16px;
+    padding-right: 16px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 20px; }
+  .header-row { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: #fff; letter-spacing: -.02em; }
+  .badge-line { background: rgba(59,125,216,0.15); border: 1px solid rgba(59,125,216,0.4); border-radius: 5px; padding: 2px 9px; font-size: 10px; color: var(--bluel); letter-spacing: .1em; }
+  .subtitle { font-size: 10px; color: var(--txt3); letter-spacing: .1em; text-transform: uppercase; }
+
+  /* ── NAV TABS ── */
+  nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(5,16,31,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: var(--safe-bot); }
+  nav button { flex: 1; background: none; border: none; color: var(--txt2); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: color .15s; }
+  nav button.active { color: var(--bluel); }
+  nav button .nav-icon { font-size: 18px; line-height: 1; }
+
+  /* ── SECTIONS ── */
+  section { display: none; }
+  section.active { display: block; animation: fadeUp .2s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+  /* ── FORM ELEMENTS ── */
+  .label { font-size: 9px; color: var(--txt2); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; }
+  .field { margin-bottom: 14px; }
+  input[type=date], input[type=number], select, textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 13px; color: var(--txt);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    -webkit-appearance: none; transition: border-color .15s;
+    color-scheme: dark;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--blue); }
+  textarea { resize: none; }
+
+  .seg { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button { flex: 1; background: none; border: none; color: var(--txt2); font-family: 'DM Mono', monospace; font-size: 12px; padding: 10px 6px; cursor: pointer; transition: all .15s; border-right: 1px solid var(--border); }
+  .seg button:last-child { border-right: none; }
+  .seg button.sel { background: rgba(59,125,216,0.2); color: var(--bluel); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-family: 'DM Mono', monospace; font-size: 11px; color: var(--txt2); cursor: pointer; transition: all .15s; }
+  .chip.sel { background: rgba(59,125,216,0.15); border-color: var(--blue); color: var(--bluel); }
+
+  .supp-toggle { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-size: 12px; color: var(--txt2); transition: all .15s; margin-bottom: 14px; }
+  .supp-toggle.on { border-color: var(--red); background: rgba(242,96,74,0.08); color: var(--red); }
+  .supp-toggle .pill { margin-left: auto; padding: 2px 8px; border-radius: 10px; font-size: 10px; background: rgba(242,96,74,0.15); }
+
+  .btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, #1a5abf, #3b7dd8); border: none; border-radius: 10px; color: #fff; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .06em; cursor: pointer; transition: opacity .15s; margin-top: 4px; }
+  .btn-primary:disabled { opacity: .3; cursor: not-allowed; }
+  .btn-primary:active { opacity: .8; }
+
+  .toast { position: fixed; top: calc(var(--safe-top) + 60px); left: 50%; transform: translateX(-50%) translateY(-10px); background: var(--green); color: #032; font-size: 12px; padding: 8px 18px; border-radius: 20px; opacity: 0; transition: all .25s; pointer-events: none; z-index: 200; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── MINI STATS ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 14px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 8px; text-align: center; }
+  .kpi-val { font-size: 20px; font-weight: 500; line-height: 1; }
+  .kpi-lbl { font-size: 8px; color: var(--txt3); letter-spacing: .1em; margin-top: 4px; text-transform: uppercase; }
+
+  /* ── HISTORY ── */
+  .entry { display: flex; align-items: flex-start; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; margin-bottom: 8px; }
+  .entry-main { flex: 1; min-width: 0; }
+  .entry-top { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+  .entry-date { font-size: 11px; color: var(--txt3); }
+  .entry-train { font-size: 12px; color: var(--bluel); font-weight: 500; }
+  .entry-sub { font-size: 11px; color: var(--txt2); }
+  .badge { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500; flex-shrink: 0; margin-top: 1px; }
+  .b-ok  { background: rgba(62,207,142,.1); color: var(--green); }
+  .b-low { background: rgba(245,183,49,.1); color: var(--amber); }
+  .b-high{ background: rgba(242,96,74,.12); color: var(--red); }
+  .b-sup { background: rgba(242,96,74,.18); color: #ffb3a7; }
+  .del-btn { background: none; border: none; color: var(--txt3); font-size: 20px; line-height: 1; padding: 0 2px; cursor: pointer; transition: color .15s; flex-shrink: 0; }
+  .del-btn:active { color: var(--red); }
+  .empty { text-align: center; color: var(--txt2); padding: 48px 0; font-size: 13px; line-height: 1.8; }
+
+  /* ── STATS ── */
+  .stat-section { margin-bottom: 22px; }
+  .stat-title { font-size: 9px; color: var(--txt3); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; }
+  .kpi-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-big { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; }
+  .kpi-big-val { font-size: 28px; font-weight: 500; line-height: 1; }
+  .kpi-big-lbl { font-size: 9px; color: var(--txt3); letter-spacing: .1em; margin-top: 5px; }
+  .kpi-big-sub { font-size: 10px; color: var(--txt3); margin-top: 3px; }
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .bar-lbl { font-size: 12px; color: var(--bluel); min-width: 38px; }
+  .bar-track { flex: 1; height: 7px; background: rgba(255,255,255,.05); border-radius: 4px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--bluel)); transition: width .5s; }
+  .bar-red   { height: 100%; border-radius: 4px; background: var(--red); transition: width .5s; }
+  .bar-meta  { font-size: 10px; color: var(--txt2); min-width: 55px; text-align: right; }
+  .cause-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .cause-icon { font-size: 16px; }
+  .cause-name { flex: 1; font-size: 12px; color: var(--txt); }
+  .cause-n { font-size: 12px; color: var(--bluel); font-weight: 500; }
+  .cause-pct { font-size: 10px; color: var(--txt3); }
+
+  /* ── HORAIRES / SETTINGS ── */
+  .timetable-row { display: grid; grid-template-columns: 70px 70px 1fr; gap: 6px; align-items: center; margin-bottom: 10px; }
+  .tt-time { font-size: 14px; color: var(--bluel); }
+  .tt-pfaff { font-size: 14px; color: #8dbfe8; }
+  .tt-dest  { font-size: 11px; color: var(--txt2); }
+  .tt-input { width: 100% !important; padding: 5px 8px !important; font-size: 12px !important; }
+  .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .info-box { background: rgba(59,125,216,.06); border: 1px solid rgba(59,125,216,.2); border-radius: 8px; padding: 12px; font-size: 11px; color: var(--txt2); line-height: 1.7; margin-top: 14px; }
+  .export-btn { width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--txt); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; transition: border-color .15s; }
+  .export-btn:active { border-color: var(--blue); }
+  .import-label { width: 100%; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--txt); font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+  #file-import { display: none; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <span class="logo">CFL · L10</span>
+    <span class="badge-line">LUX → TROISVIERGES</span>
+  </div>
+  <div class="subtitle">Suivi des retards · Trajet soir</div>
+</div>
+
+<!-- SECTIONS -->
+
+<!-- ① SAISIE -->
+<section class="active" id="sec-saisie">
+
+  <div class="field">
+    <div class="label">Date</div>
+    <input type="date" id="f-date"/>
+  </div>
+
+  <div class="field">
+    <div class="label">Gare de départ</div>
+    <div class="seg">
+      <button class="sel" onclick="selectGare('Luxembourg',this)">Luxembourg</button>
+      <button onclick="selectGare('Pfaffenthal',this)">Pfaffenthal</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="label">Train</div>
+    <select id="f-train"></select>
+  </div>
+
+  <div class="supp-toggle" id="supp-toggle" onclick="toggleSupp()">
+    <span>🚫</span>
+    <span>Train supprimé</span>
+    <span class="pill" id="supp-pill">NON</span>
+  </div>
+
+  <div id="retard-block" class="field">
+    <div class="label">Retard à l'arrivée (min) — 0 si à l'heure</div>
+    <input type="number" id="f-retard" min="0" max="180" placeholder="0"/>
+  </div>
+
+  <div class="field">
+    <div class="label">Cause</div>
+    <div class="chips" id="chips-cause"></div>
+  </div>
+
+  <div class="field">
+    <div class="label">Note (facultatif)</div>
+    <textarea id="f-note" rows="2" placeholder="Bus de substitution, annonce en gare…"></textarea>
+  </div>
+
+  <button class="btn-primary" id="btn-save" onclick="saveEntry()">Enregistrer ce trajet</button>
+
+  <div class="kpi-row" id="mini-kpis" style="display:none">
+    <div class="kpi"><div class="kpi-val" id="k-ponct" style="color:var(--green)">—</div><div class="kpi-lbl">Ponctualité</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-moy" style="color:var(--bluel)">—</div><div class="kpi-lbl">Moy. retard</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-supp" style="color:var(--red)">—</div><div class="kpi-lbl">Supprimés</div></div>
+  </div>
+</section>
+
+<!-- ② HISTORIQUE -->
+<section id="sec-histo">
+  <div id="histo-list"></div>
+</section>
+
+<!-- ③ STATISTIQUES -->
+<section id="sec-stats">
+  <div id="stats-content"></div>
+</section>
+
+<!-- ④ RÉGLAGES -->
+<section id="sec-reglages">
+
+  <div class="stat-title" style="margin-bottom:10px">Horaires ligne 10 (soir)</div>
+  <div class="section-card">
+    <div style="display:grid;grid-template-columns:70px 70px 1fr;gap:6px;margin-bottom:8px">
+      <div class="label">LUX</div>
+      <div class="label">PFAFF</div>
+      <div class="label">TERMINUS</div>
+    </div>
+    <div id="tt-rows"></div>
+    <button class="export-btn" style="margin-top:8px" onclick="toggleEditTT()" id="btn-edit-tt">✎ Corriger les horaires</button>
+  </div>
+
+  <div class="stat-title" style="margin-bottom:10px;margin-top:4px">Sauvegarde iCloud</div>
+  <div class="section-card">
+    <button class="export-btn" onclick="exportData()">☁️ Exporter vers iCloud Drive</button>
+    <label class="import-label" for="file-import">📥 Importer depuis iCloud Drive</label>
+    <input type="file" id="file-import" accept=".json" onchange="importData(event)"/>
+    <div class="info-box">
+      <b>Comment ça marche :</b><br/>
+      1. Appuyez sur <b>Exporter</b> → le fichier <code>cfl-l10.json</code> sera téléchargé.<br/>
+      2. Dans la feuille de partage iOS, choisissez <b>Enregistrer dans Fichiers → iCloud Drive</b>.<br/>
+      3. Pour restaurer, appuyez sur <b>Importer</b> et sélectionnez le fichier depuis iCloud.
+    </div>
+  </div>
+
+  <div class="stat-title" style="margin-bottom:10px;margin-top:4px">Installer l'app</div>
+  <div class="section-card">
+    <div class="info-box" style="margin-top:0">
+      Sur iPhone avec <b>Safari</b> :<br/>
+      1. Ouvrez cette page dans Safari.<br/>
+      2. Appuyez sur l'icône <b>Partager</b> (carré + flèche).<br/>
+      3. Choisissez <b>« Sur l'écran d'accueil »</b>.<br/>
+      4. L'app apparaît comme une app native, sans barre Safari.
+    </div>
+  </div>
+
+</section>
+
+<!-- NAV -->
+<nav>
+  <button class="active" onclick="showTab('saisie',this)"><span class="nav-icon">✚</span>Saisie</button>
+  <button onclick="showTab('histo',this)"><span class="nav-icon">📋</span>Historique</button>
+  <button onclick="showTab('stats',this)"><span class="nav-icon">📊</span>Stats</button>
+  <button onclick="showTab('reglages',this)"><span class="nav-icon">⚙️</span>Réglages</button>
+</nav>
+
+<script>
+// ─── DONNÉES ───────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'cfl_l10_v3';
+
+let state = {
+  entries: [],
+  trains: [
+    { lux:'15:16', pfaff:'15:20', dest:'Troisvierges' },
+    { lux:'15:44', pfaff:'15:48', dest:'Troisvierges' },
+    { lux:'16:16', pfaff:'16:20', dest:'Troisvierges' },
+    { lux:'16:44', pfaff:'16:48', dest:'Troisvierges' },
+    { lux:'17:16', pfaff:'17:20', dest:'Troisvierges' },
+    { lux:'17:44', pfaff:'17:48', dest:'Troisvierges' },
+    { lux:'18:16', pfaff:'18:20', dest:'Troisvierges' },
+    { lux:'18:44', pfaff:'18:48', dest:'Troisvierges' },
+    { lux:'19:16', pfaff:'19:20', dest:'Troisvierges' },
+    { lux:'19:44', pfaff:'19:48', dest:'Troisvierges' },
+  ]
+};
+
+const CAUSES = [
+  { id:'incident', label:'Incident technique', icon:'⚙️' },
+  { id:'travaux',  label:'Travaux',            icon:'🚧' },
+  { id:'voisin',   label:'Réseau voisin',      icon:'🌐' },
+  { id:'meteo',    label:'Météo',              icon:'🌩️' },
+  { id:'personne', label:'Personne sur voie',  icon:'🚨' },
+  { id:'inconnu',  label:'Inconnu',            icon:'❓' },
+];
+
+// ─── FORM STATE ─────────────────────────────────────────────────────────────
+let fGare    = 'Luxembourg';
+let fCause   = 'inconnu';
+let fSupp    = false;
+let ttEditing = false;
+
+// ─── PERSIST ────────────────────────────────────────────────────────────────
+function persist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function load() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) state = { ...state, ...JSON.parse(s) };
+  } catch(e) {}
+}
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+function pad(n) { return String(n).padStart(2,'0'); }
+function todayISO() { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function fmtDate(iso) { const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function toast(msg, col='var(--green)') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = col; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+function init() {
+  load();
+  document.getElementById('f-date').value = todayISO();
+  buildTrainSelect();
+  buildChips();
+  renderTimetable();
+  renderMiniKpis();
+}
+
+// ─── TRAIN SELECT ───────────────────────────────────────────────────────────
+function buildTrainSelect() {
+  const sel = document.getElementById('f-train');
+  sel.innerHTML = '';
+  state.trains.forEach((t, i) => {
+    const dep = fGare === 'Luxembourg' ? t.lux : t.pfaff;
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `${dep}  →  ${t.dest}`;
+    sel.appendChild(opt);
+  });
+  // default to ~17h train
+  const def = state.trains.findIndex(t => t.lux >= '17:00');
+  sel.value = def >= 0 ? def : 0;
+}
+
+function selectGare(g, btn) {
+  fGare = g;
+  document.querySelectorAll('.seg button').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  buildTrainSelect();
+}
+
+// ─── CAUSE CHIPS ────────────────────────────────────────────────────────────
+function buildChips() {
+  const wrap = document.getElementById('chips-cause');
+  wrap.innerHTML = '';
+  CAUSES.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (c.id === fCause ? ' sel' : '');
+    btn.innerHTML = `<span>${c.icon}</span>${c.label}`;
+    btn.onclick = () => {
+      fCause = c.id;
+      document.querySelectorAll('#chips-cause .chip').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+// ─── SUPPRIMÉ TOGGLE ────────────────────────────────────────────────────────
+function toggleSupp() {
+  fSupp = !fSupp;
+  document.getElementById('supp-toggle').classList.toggle('on', fSupp);
+  document.getElementById('supp-pill').textContent = fSupp ? 'OUI' : 'NON';
+  document.getElementById('retard-block').style.display = fSupp ? 'none' : 'block';
+}
+
+// ─── SAVE ENTRY ─────────────────────────────────────────────────────────────
+function saveEntry() {
+  const dateVal  = document.getElementById('f-date').value;
+  const trainIdx = parseInt(document.getElementById('f-train').value);
+  const retardRaw = document.getElementById('f-retard').value;
+  const note     = document.getElementById('f-note').value.trim();
+
+  if (!dateVal) { toast('Date requise','var(--amber)'); return; }
+  if (!fSupp && retardRaw === '') { toast('Indiquez un retard (0 si à l\'heure)','var(--amber)'); return; }
+
+  const t = state.trains[trainIdx];
+  const entry = {
+    id:       Date.now(),
+    date:     dateVal,
+    gare:     fGare,
+    trainIdx,
+    lux:      t.lux,
+    pfaff:    t.pfaff,
+    dest:     t.dest,
+    retard:   fSupp ? 999 : parseInt(retardRaw),
+    cause:    fCause,
+    note,
+  };
+
+  state.entries.unshift(entry);
+  persist();
+  renderMiniKpis();
+  renderHisto();
+  renderStats();
+
+  document.getElementById('f-retard').value = '';
+  document.getElementById('f-note').value = '';
+  fSupp = false;
+  document.getElementById('supp-toggle').classList.remove('on');
+  document.getElementById('supp-pill').textContent = 'NON';
+  document.getElementById('retard-block').style.display = 'block';
+
+  toast('✓ Trajet enregistré');
+}
+
+// ─── MINI KPIS ──────────────────────────────────────────────────────────────
+function renderMiniKpis() {
+  const { entries } = state;
+  if (!entries.length) { document.getElementById('mini-kpis').style.display='none'; return; }
+  document.getElementById('mini-kpis').style.display='grid';
+
+  const total  = entries.length;
+  const supps  = entries.filter(e => e.retard === 999).length;
+  const retards= entries.filter(e => e.retard > 0 && e.retard !== 999);
+  const ok     = total - supps - retards.length;
+  const ponct  = Math.round(ok / total * 100);
+  const moy    = retards.length ? Math.round(retards.reduce((s,e)=>s+e.retard,0)/retards.length) : 0;
+
+  const el = v => `${v}%`;
+  document.getElementById('k-ponct').textContent = el(ponct);
+  document.getElementById('k-ponct').style.color = ponct>=90?'var(--green)':ponct>=80?'var(--amber)':'var(--red)';
+  document.getElementById('k-moy').textContent  = moy ? `${moy}m` : '0m';
+  document.getElementById('k-supp').textContent = supps;
+}
+
+// ─── HISTORY ────────────────────────────────────────────────────────────────
+function renderHisto() {
+  const el = document.getElementById('histo-list');
+  const { entries } = state;
+  if (!entries.length) { el.innerHTML = '<div class="empty">Aucun trajet enregistré.<br/>Commencez par la saisie ✚</div>'; return; }
+
+  el.innerHTML = entries.map(e => {
+    const dep    = e.gare === 'Luxembourg' ? e.lux : e.pfaff;
+    const isSup  = e.retard === 999;
+    const bClass = isSup ? 'b-sup' : e.retard===0 ? 'b-ok' : e.retard<=10 ? 'b-low' : 'b-high';
+    const bText  = isSup ? 'Supprimé' : e.retard===0 ? 'À l\'heure' : `+${e.retard} min`;
+    const cause  = CAUSES.find(c=>c.id===e.cause);
+    return `
+    <div class="entry">
+      <div class="entry-main">
+        <div class="entry-top">
+          <span class="entry-date">${fmtDate(e.date)}</span>
+          <span class="entry-train">${dep} · ${e.gare==='Luxembourg'?'Lux':'Pfaff'} → ${e.dest}</span>
+        </div>
+        <div class="entry-sub">${cause?.icon} ${cause?.label}${e.note?' · '+e.note:''}</div>
+      </div>
+      <span class="badge ${bClass}">${bText}</span>
+      <button class="del-btn" onclick="deleteEntry(${e.id})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteEntry(id) {
+  state.entries = state.entries.filter(e => e.id !== id);
+  persist();
+  renderHisto();
+  renderStats();
+  renderMiniKpis();
+}
+
+// ─── STATISTICS ─────────────────────────────────────────────────────────────
+function renderStats() {
+  const el = document.getElementById('stats-content');
+  const { entries, trains } = state;
+  if (!entries.length) { el.innerHTML = '<div class="empty">Enregistrez des trajets<br/>pour voir vos statistiques 📊</div>'; return; }
+
+  const total   = entries.length;
+  const supps   = entries.filter(e => e.retard===999);
+  const retards = entries.filter(e => e.retard>0 && e.retard!==999);
+  const ok      = total - supps.length - retards.length;
+  const ponct   = Math.round(ok/total*100);
+  const moy     = retards.length ? Math.round(retards.reduce((s,e)=>s+e.retard,0)/retards.length) : 0;
+  const maxR    = retards.length ? Math.max(...retards.map(e=>e.retard)) : 0;
+  const pColor  = ponct>=90?'var(--green)':ponct>=80?'var(--amber)':'var(--red)';
+
+  // By train
+  const byTrain = trains.map((t,i) => {
+    const es = entries.filter(e=>e.lux===t.lux);
+    const rs = es.filter(e=>e.retard>0&&e.retard!==999);
+    const ss = es.filter(e=>e.retard===999);
+    return { lux:t.lux, total:es.length, ret:rs.length, supp:ss.length, moy: rs.length?Math.round(rs.reduce((s,e)=>s+e.retard,0)/rs.length):0 };
+  }).filter(x=>x.total>0);
+  const barMax = Math.max(...byTrain.map(x=>x.ret+x.supp),1);
+
+  // By cause
+  const byCause = CAUSES.map(c=>({...c, count: entries.filter(e=>e.cause===c.id).length}))
+    .filter(x=>x.count>0).sort((a,b)=>b.count-a.count);
+
+  el.innerHTML = `
+  <div class="stat-section">
+    <div class="kpi-2">
+      <div class="kpi-big">
+        <div class="kpi-big-val" style="color:${pColor}">${ponct}%</div>
+        <div class="kpi-big-lbl">Ponctualité</div>
+        <div class="kpi-big-sub">Réf. CFL : 90,1%</div>
+      </div>
+      <div class="kpi-big">
+        <div class="kpi-big-val" style="color:var(--bluel)">${retards.length}/${total}</div>
+        <div class="kpi-big-lbl">En retard</div>
+        <div class="kpi-big-sub">${supps.length} supprimé${supps.length>1?'s':''} · max ${maxR}m</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-section">
+    <div class="stat-title">Retard moyen</div>
+    <div style="font-size:32px;color:var(--bluel);padding:4px 0 2px">${moy}<span style="font-size:14px;color:var(--txt2)"> min</span></div>
+    <div style="font-size:11px;color:var(--txt3)">sur ${retards.length} trajet${retards.length>1?'s':''} en retard</div>
+  </div>
+
+  ${byTrain.length ? `
+  <div class="stat-section">
+    <div class="stat-title">Incidents par train (départ Lux)</div>
+    ${byTrain.map(x=>`
+    <div class="bar-row">
+      <div class="bar-lbl">${x.lux}</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+        ${x.ret>0?`<div class="bar-track"><div class="bar-fill" style="width:${Math.round(x.ret/barMax*100)}%"></div></div>`:''}
+        ${x.supp>0?`<div class="bar-track"><div class="bar-red"  style="width:${Math.round(x.supp/barMax*100)}%"></div></div>`:''}
+      </div>
+      <div class="bar-meta">${x.ret?`${x.ret}ret`:''}${x.ret&&x.supp?' ':''} ${x.supp?`${x.supp}supp`:''}</div>
+    </div>`).join('')}
+  </div>` : ''}
+
+  ${byCause.length ? `
+  <div class="stat-section">
+    <div class="stat-title">Causes</div>
+    ${byCause.map(c=>`
+    <div class="cause-row">
+      <span class="cause-icon">${c.icon}</span>
+      <span class="cause-name">${c.label}</span>
+      <span class="cause-n">${c.count}</span>
+      <span class="cause-pct">(${Math.round(c.count/total*100)}%)</span>
+    </div>`).join('')}
+  </div>` : ''}
+  `;
+}
+
+// ─── TIMETABLE RENDER ────────────────────────────────────────────────────────
+function renderTimetable() {
+  const wrap = document.getElementById('tt-rows');
+  wrap.innerHTML = state.trains.map((t,i) => `
+    <div class="timetable-row">
+      ${ttEditing
+        ? `<input class="field-input tt-input" value="${t.lux}"   oninput="updateTrain(${i},'lux',this.value)"/>
+           <input class="field-input tt-input" value="${t.pfaff}" oninput="updateTrain(${i},'pfaff',this.value)"/>
+           <input class="field-input tt-input" value="${t.dest}"  oninput="updateTrain(${i},'dest',this.value)" style="font-size:11px"/>`
+        : `<div class="tt-time">${t.lux}</div>
+           <div class="tt-pfaff">${t.pfaff}</div>
+           <div class="tt-dest">${t.dest}</div>`}
+    </div>`).join('');
+}
+
+function updateTrain(i, key, val) { state.trains[i][key] = val; }
+
+function toggleEditTT() {
+  ttEditing = !ttEditing;
+  renderTimetable();
+  const btn = document.getElementById('btn-edit-tt');
+  if (!ttEditing) {
+    persist();
+    buildTrainSelect();
+    toast('Horaires mis à jour');
+    btn.textContent = '✎ Corriger les horaires';
+  } else {
+    btn.textContent = '✓ Enregistrer les horaires';
+  }
+}
+
+// ─── EXPORT / IMPORT ─────────────────────────────────────────────────────────
+function exportData() {
+  const json = JSON.stringify(state, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'cfl-l10.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('Fichier exporté → enregistrez dans iCloud Drive');
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (imported.entries) {
+        state = { ...state, ...imported };
+        persist();
+        renderHisto();
+        renderStats();
+        renderMiniKpis();
+        renderTimetable();
+        buildTrainSelect();
+        toast(`✓ ${state.entries.length} trajets importés`);
+      } else {
+        toast('Fichier invalide','var(--red)');
+      }
+    } catch { toast('Erreur de lecture','var(--red)'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+const TABS = { saisie:'sec-saisie', histo:'sec-histo', stats:'sec-stats', reglages:'sec-reglages' };
+function showTab(id, btn) {
+  Object.values(TABS).forEach(s => { const el=document.getElementById(s); if(el) el.classList.remove('active'); });
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(TABS[id]).classList.add('active');
+  btn.classList.add('active');
+  if (id==='histo')    renderHisto();
+  if (id==='stats')    renderStats();
+  if (id==='reglages') renderTimetable();
+}
+
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
